@@ -1,0 +1,7 @@
+{
+	"name":"Daredevil",
+	"alterEgo":"Matt Murdoch",
+	"jurisdiction": "Hell's Kitchen",
+	"superpowers":["Agility", "Echokinesis", "Enhanced Senses", "Enhanced Reflexes", "Intelligence", "Stamina", "Weapons Master"],
+	"style":{"background-color":"#cb483b","color":"#000000"}
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title> Comp2406 Hero Database </title>
+  </head>
+  <body>
+    <div><!--header-->
+      <h1>Comp2406 A1 Hero Database!</h1>
+    </div>
+
+    <div class = "heroSelection"> <!--main-->
+      Hero:<br>
+      <select id="heroMenu"></select><br>
+      <button id="viewButton" onclick="restyle()">View</button>
+    </div>
+
+    <script>
+      var currColor = "rgb(51, 85, 86)";
+      var targetColor = "randomColor()";
+      var http = new XMLHttpRequest();
+      var url = "/userStyle";
+
+      function colorShifter(){
+      var intervalBoy = setInterval(restyle, 500);
+      }
+      
+      function randomColor(){
+      var randomRed = Math.floor(Math.random() * 255);
+      var randomGreen = Math.floor(Math.random() * 255);
+      var randomBlue = Math.floor(Math.random() * 255);
+      return "rgb("+randomRed+","+randomGreen+","+randomBlue+")";
+      }
+
+      function restyle() {
+      currColor = targetColor;
+      document.body.style.backgroundColor = currColor;
+      targetColor = randomColor();
+      }
+
+      function restyleALTER(){
+      targetColor = document.getElementById("userColor").value;
+      document.body.style.backgroundColor = targetColor;
+      http.open("POST", url, true);
+      http.setRequestHeader("Content-type", "application/json");
+      var data = JSON.stringify({"username":document.getElementById("aName").value,"favouriteColour":document.getElementById("userColor").value});
+      http.send(data);
+      }
+    </script>
+
+
+  </body>
+</html>

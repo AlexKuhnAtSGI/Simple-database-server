@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title> Comp2406 Hero Database </title>
+  </head>
+  <body onload="menuFiller()">
+    <div><!--header-->
+      <h1>Comp2406 A1 Hero Database!</h1>
+    </div>
+
+    <div class = "heroSelection">
+      Hero:<br>
+      <select id="heroMenu"></select><br>
+      <button id="viewButton" onclick="parseData()">View</button>
+    </div>
+
+    <div class = "heroDetails" id = "heroDetails">
+      Name:<br>
+      <input type="text" id="heroName" readOnly="1" ><br>
+      Alter Ego:<br>
+      <input type="text" id="heroIdentity" readOnly="1"><br>
+      Jurisdiction:<br>
+      <input type="text" id="heroDomain" readOnly="1"><br>
+      Superpowers:<br>
+      <textarea id="heroPowers" readOnly="1" rows="20" cols="30"></textarea>
+    </div>
+
+    <script>
+      
+      function heroLoader(callback){
+      var xhr = new XMLHttpRequest();
+      var url = "/allHeroes";
+
+      xhr.open("GET",url,true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+      data = xhr.responseText;
+      callback(data);
+      }
+
+      }
+      };
+      xhr.send();
+      }
+
+      function menuFiller(){
+      var menu = document.getElementById("heroMenu");
+      var importedOptions = [];
+
+      heroLoader(function(data) {
+      for (i = 0; i < JSON.parse(data).length; i++){
+      var opt = document.createElement('option');
+      opt.text = importedOptions[i] = JSON.parse(data)[i].replace('_', ' ').substring(0, JSON.parse(data)[i].length - 5);
+      menu.appendChild(opt);
+      }
+      });
+      }
+
+      function requestData(callback){
+      var xhr = new XMLHttpRequest();
+      var select = document.getElementById('heroMenu');
+      var url = "/hero?name=" + select.options[select.selectedIndex].value.replace(' ', '_');
+
+      xhr.open("GET",url,true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.onreadystatechange = function(){
+      if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+      data = xhr.responseText;
+      callback(data);
+      }
+
+      }
+      };
+      xhr.send();
+      }
+
+      function parseData(){
+      
+      requestData(function(data){
+      var json = JSON.parse(data);
+      document.getElementById("heroName").value = json["name"];
+      document.getElementById("heroIdentity").value = json["alterEgo"];
+      document.getElementById("heroDomain").value = json["jurisdiction"];
+      document.getElementById("heroPowers").value = "";
+      for (i=0; i < json["superpowers"].length; i++){
+      document.getElementById("heroPowers").value += json["superpowers"][i] + "\n";
+      }
+      for (var key in json["style"]){
+      document.getElementById("heroDetails").setAttribute("style", key + ": " + json["style"][key]);
+      }
+      document.getElementById("heroDetails").setAttribute("style", "background-color: " + json["style"]["backgroundColor"]);
+      document.getElementById("heroDetails").setAttribute("style", "color: " + json["style"]["color"]);
+      });
+      }
+    </script>
+
+
+  </body>
+</html>
